@@ -31,7 +31,7 @@ Route::any('/developer/test','DeveloperController@test');
 
 Route::any('/buildinginfo','BuildingInfoController@index');
 
-Route::any('/buildinginfo/buildings','BuildingInfoController@buildings');
+Route::any('/buildinginfo/buildings/{skip}/{take}','BuildingInfoController@buildings');
 
 Route::any('/buildinginfo/building/{id}','BuildingInfoController@building');
 
@@ -50,6 +50,8 @@ Route::any('/wedding','WeddingController@index');
 Route::any('/wedding/result','WeddingController@result');
 
 Route::any('/firebase','FirebaseController@index');
+
+Route::any('/photobatch/index','PhotoBatchController@index');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',

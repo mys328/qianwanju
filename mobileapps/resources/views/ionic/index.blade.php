@@ -9,6 +9,7 @@
   <script src="//code.ionicframework.com/nightly/js/ionic.bundle.js"></script>
   -->
   <link href="/css/ionic.css" rel="stylesheet">
+
   <script src="/js/ionic.bundle.min.js"></script>
   <script src="/js/firebase.js"></script>
   <script src="/js/angularfire.min.js"></script>
@@ -104,15 +105,23 @@
 
   $scope.buildings = [];
   $scope.isLoading = false;
+  $scope.skip = 0;
+  $scope.take = 5;
+
   $scope.getData = function(){
     $scope.isLoading = true;
-    $http.get("/index.php/buildinginfo/buildings")
+    $http.get("/index.php/buildinginfo/buildings/"+$scope.skip+"/"+$scope.take)
     .success(function(data){
-      $scope.buildings = data;
+      $scope.buildings = data.concat($scope.buildings);
     })
     .finally(function(data){
       $scope.isLoading = false;
     });
+  }
+
+  $scope.doRefresh = function(){
+    $scope.skip =$scope.skip + $scope.take;
+    $scope.getData();
   }
 
   $scope.getData();
@@ -196,8 +205,14 @@
   <script id="templates/list.html" type="text/ng-template">
     
     <ion-view view-title="热门">
+        
       <ion-content class="padding">
-        <ion-spinner icon="spiral" ng-show="isLoading"></ion-spinner>
+            <ion-refresher
+              pulling-text="Pull to refresh..."
+              on-refresh="doRefresh()">
+            </ion-refresher>
+
+        <!--<ion-spinner icon="spiral" ng-show="isLoading"></ion-spinner>-->
 
         <ion-list can-swipe="listCanSwipe">
 
@@ -215,7 +230,9 @@
   </script>
 
   <script id="templates/detail.html" type="text/ng-template">
-    
+    <style>
+      .item, .item p, .item div p{ white-space:normal; }
+    </style>
     <ion-view view-title="楼盘信息">
       <ion-content class="padding">
         <h2>@{{building.Name}}</h2>
@@ -224,43 +241,43 @@
             <ion-card><img src="/uploads/coverimages/@{{building.CoverImage}}" style="max-width: 100%;height: auto;"/></ion-card>
           </ion-item>
           <ion-item>
-            <ion-card><button class="button button-outline button-positive"><i class="ion-ios-home"></i> 开发商  <b>@{{building.developer.Name}}</b></button></ion-card>
+            <ion-card><i class="ion-ios-home"></i> 开发商 <b>@{{building.developer.Name}}</b>
           </ion-item>
           <ion-item>
-            <ion-card><button class="button button-outline button-positive"><i class="ion-home"></i>物业公司  <b>@{{building.propertycompany.Name}}</b></button></ion-card>
+            <ion-card></i>物业公司  <b>@{{building.propertycompany.Name}}</b></ion-card>
           </ion-item>
           <ion-item>
-            <ion-card><button class="button button-outline button-positive"><i class="ion-social-yen"></i>均价  <b>@{{building.Price}}</b>元/平米</button></ion-card>
+            <ion-card><i class="ion-social-yen"></i>均价  <b>@{{building.Price}}</b>元/平米</ion-card>
           </ion-item>
           <ion-item>
-            <ion-card><button class="button button-outline button-positive"><i class="ion-ios-calendar-outline"></i>开盘日期  <b>@{{building.OpenTime}}</b></button></ion-card>
+            <ion-card><i class="ion-ios-calendar-outline"></i>开盘日期  <b>@{{building.OpenTime}}</b></ion-card>
           </ion-item>
           <ion-item>
-            <ion-card><button class="button button-outline button-positive"><i class="ion-android-home"></i>物业类型  <b>@{{building.PropertyType}}</b></button></ion-card>
+            <ion-card><i class="ion-android-home"></i>物业类型  <b>@{{building.PropertyType}}</b></ion-card>
            </ion-item>
           <ion-item>
-            <ion-card><button class="button button-outline button-positive"><i class="ion-android-home"></i>建筑类型  <b>@{{building.BuildingType}}</b></button></ion-card>
+            <ion-card><i class="ion-android-home"></i>建筑类型  <b>@{{building.BuildingType}}</b></ion-card>
           </ion-item>
           <ion-item>
-            <ion-card><button class="button button-outline button-positive"><i class="ion-person-stalker"></i>户数  <b>@{{building.DoorAmount}}</b></button></ion-card>
+            <ion-card><i class="ion-person-stalker"></i>户数  <b>@{{building.DoorAmount}}</b></ion-card>
           </ion-item>
           <ion-item>
-            <ion-card><button class="button button-outline button-positive"><i class="ion-android-car"></i>车位数量  <b>@{{building.StallAmount}}</b></button></ion-card>
+            <ion-card><i class="ion-android-car"></i>车位数量  <b>@{{building.StallAmount}}</b></ion-card>
           </ion-item>
           <ion-item>
-            <ion-card><button class="button button-outline button-positive"><i class="ion-hammer"></i>装修  <b>@{{building.Fitment}}</b></button></ion-card>
+            <ion-card><i class="ion-hammer"></i>装修  <b>@{{building.Fitment}}</b></ion-card>
           </ion-item>
           <ion-item>
-            <ion-card><button class="button button-outline button-positive"><i class="ion-ios-calendar-outline"></i>容积率  <b>@{{building.Volume}}</b></button></ion-card>
+            <ion-card><i class="ion-ios-calendar-outline"></i>容积率  <b>@{{building.Volume}}</b></ion-card>
           </ion-item>
           <ion-item>
-            <ion-card><button class="button button-outline button-positive"><i class="ion-leaf"></i>绿化率  <b>@{{building.GreenPercentage}}</b></button></ion-card>
+            <ion-card><i class="ion-leaf"></i>绿化率  <b>@{{building.GreenPercentage}}</b></ion-card>
           </ion-item>
           <ion-item>
-            <ion-card><button class="button button-outline button-positive"><i class="ion-cash"></i>物业费  <b>@{{building.PropertyFee}}</b></button></ion-card>
+            <ion-card><i class="ion-cash"></i>物业费  <b>@{{building.PropertyFee}}</b></ion-card>
           </ion-item>
           <ion-item>
-            <ion-card><p ng-bind-html='building.News'></p></ion-card>
+            <div ng-bind-html='building.News'></div>
           </ion-item>
           <ion-item>
             <ion-card>

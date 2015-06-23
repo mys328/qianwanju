@@ -10,6 +10,7 @@ use App\PropertyType;
 use App\BuildingType;
 use Response;
 use HTML;
+use DB;
 
 class BuildingInfoController extends Controller {
 
@@ -108,12 +109,10 @@ class BuildingInfoController extends Controller {
 		 return $edit->view('buildinginfo.edit',compact('edit'));
 	}
 
-	public function buildings()
+	public function buildings($skip,$take)
 	{
-		$buildings = BuildingInfo::all();
-
+		$buildings = DB::table('BuildingInfo')->skip($skip)->take($take)->get();
 		return Response::json($buildings);
-
 	}
 
 	public function building($id)
